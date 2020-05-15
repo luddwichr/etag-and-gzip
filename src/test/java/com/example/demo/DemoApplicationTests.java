@@ -8,10 +8,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +30,7 @@ class DemoApplicationTests {
 
         ResponseEntity<String> response = fireRequest(requestPath);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders().get(HttpHeaders.CONTENT_ENCODING)).contains("gzip");
     }
 
@@ -42,6 +40,7 @@ class DemoApplicationTests {
 
         ResponseEntity<String> response = fireRequest(requestPath);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders()).doesNotContainKey(HttpHeaders.CONTENT_ENCODING);
     }
 
@@ -51,8 +50,8 @@ class DemoApplicationTests {
 
         ResponseEntity<String> response = fireRequest(requestPath);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders().get(HttpHeaders.CONTENT_ENCODING)).contains("gzip");
-
     }
 
     @Test
@@ -61,15 +60,14 @@ class DemoApplicationTests {
 
         ResponseEntity<String> response = fireRequest(requestPath);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders()).doesNotContainKey(HttpHeaders.CONTENT_ENCODING);
     }
 
     private String getMd5HashOfResource(String resourcePath) {
         Resource resource = new DefaultResourceLoader().getResource(resourcePath);
-        try {
-            try (InputStream inputStream = resource.getInputStream()) {
-                return DigestUtils.md5Hex(inputStream);
-            }
+        try (InputStream inputStream = resource.getInputStream()) {
+            return DigestUtils.md5Hex(inputStream);
         } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }

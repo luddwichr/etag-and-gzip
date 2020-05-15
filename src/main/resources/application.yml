@@ -1,5 +1,4 @@
 server:
-  http2.enabled: true
   compression:
     enabled: true
     mime-types: application/javascript
@@ -9,4 +8,3 @@ spring.resources:
     strategy.content:
       enabled: true
       paths: /versioned/**
-  cache.cachecontrol.max-age: 365d
